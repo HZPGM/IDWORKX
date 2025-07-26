@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IDWORKX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: #0e0e10; color: #fff; }
+    header {
+      background-color: #1c1c1e;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    header h1 { font-size: 24px; font-weight: 700; }
+    .header-controls { display: flex; align-items: center; gap: 15px; }
+    nav {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    select {
+      background: #2c2c2e;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 6px 10px;
+      border-radius: 5px;
+    }
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+    .track-list { display: flex; flex-direction: column; gap: 20px; }
+    .track {
+      background: #1c1c1e;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.2s ease;
+    }
+    .track:hover { transform: translateY(-2px); }
+    .track-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .track-info h3 { font-size: 18px; margin-bottom: 10px; }
+    audio { width: 250px; }
+    .track button {
+      background: #00ff9f;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .extra-tracks {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 0;
+      transition: max-height 0.5s ease, opacity 0.5s ease, margin-top 0.5s ease;
+    }
+    .extra-tracks.show {
+      max-height: 500px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+    .total {
+      margin-top: 40px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #00ff9f;
+    }
+    .checkout {
+      margin-top: 20px;
+      background: #00ff9f;
+      color: #000;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    footer {
+      background: #1c1c1e;
+      text-align: center;
+      padding: 30px;
+      margin-top: 60px;
+      color: #888;
+    }
+    .image-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 20px;
+    }
+    .image-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0, 255, 159, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>IDWORKX</h1>
+    <nav>
+      <a href="#" id="nav-home">Início</a>
+      <a href="#" id="nav-catalog">Catálogo</a>
+      <a href="#" id="nav-cart">Carrinho</a>
+      <a href="#" id="nav-contact">Contato</a>
+    </nav>
+    <div class="header-controls">
+      <select id="language-selector" onchange="changeLanguage()">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="de">Deutsch</option>
+        <option value="nl">Nederlands</option>
+      </select>
+      <select id="currency-selector">
+        <option value="usd">USD $</option>
+        <option value="eur" selected>EUR €</option>
+        <option value="gbp">GBP £</option>
+        <option value="cad">Dólar canadense</option>
+        <option value="aud">Dólar australiano</option>
+        <option value="sek">Coroas suecas</option>
+        <option value="inr">INR ₹</option>
+        <option value="cny">Yuan Chinês ¥</option>
+      </select>
+    </div>
+  </header>
+
+  <section style="background-color: #111; display: flex; justify-content: center; align-items: center; padding: 60px 20px; gap: 40px; flex-wrap: nowrap;">
+    <img src="Inserir%20um%20subt%C3%ADtulo%20(1).png" alt="Banner 1" class="image-hover" style="width: 850px; height: 350px; object-fit: contain;">
+    <img src="Inserir%20um%20subt%C3%ADtulo%20(4).png" alt="Banner 2" class="image-hover" style="width: 850px; height: 350px; object-fit: cover;">
+  </section>
+
+  <div class="container">
+    <div class="track-list"></div>
+  </div>
+
+  <footer>
+    <span id="footer-text">&copy; 2025 Loja de Músicas | Desenvolvido por você</span>
+  </footer>
+
+<div id="carrinho-lateral" style="position: fixed; top: 0; right: -400px; width: 300px; height: 100%; background: #1c1c1e; box-shadow: -4px 0 10px rgba(0,0,0,0.4); padding: 20px; color: white; overflow-y: auto; transition: right 0.4s ease; z-index: 9999;">
+  <button onclick="document.getElementById('carrinho-lateral').style.right='-400px'" style="position:absolute; top:10px; right:10px; background:none; border:none; color:#00ff9f; font-size:20px; cursor:pointer;">×</button>
+  <h3 style="margin-bottom: 20px;">Carrinho</h3>
+  <ul id="itens-carrinho" style="list-style: none; padding-left: 0; margin-bottom: 20px;"></ul>
+  <div class="total" style="font-size: 18px; font-weight: 600; color: #00ff9f; margin-bottom: 20px;">Total: € <span id="total">0.00</span></div>
+  <button class="checkout" onclick="finalizarCompra()" id="btn-checkout" style="width: 100%;">Finalizar Compra</button>
+</div>
+
+  <script>
+    let total = 0;
+
+    function adicionarCarrinho(nome, preco) {
+  total += preco;
+  document.getElementById('total').textContent = total.toFixed(2);
+
+  const item = document.createElement('li');
+  item.style.display = 'flex';
+  item.style.justifyContent = 'space-between';
+  item.style.marginBottom = '10px';
+
+  const label = document.createElement('span');
+  label.textContent = `${nome} - € ${preco.toFixed(2)}`;
+
+  const removeBtn = document.createElement('button');
+  removeBtn.textContent = '×';
+  removeBtn.style.background = 'none';
+  removeBtn.style.border = 'none';
+  removeBtn.style.color = '#00ff9f';
+  removeBtn.style.cursor = 'pointer';
+  removeBtn.style.fontSize = '16px';
+  removeBtn.onclick = function() {
+    total -= preco;
+    document.getElementById('total').textContent = total.toFixed(2);
+    item.remove();
+  };
+
+  item.appendChild(label);
+  item.appendChild(removeBtn);
+  document.getElementById('itens-carrinho').appendChild(item);
+
+  document.getElementById('carrinho-lateral').style.right = '0';
+}
+
+    function finalizarCompra() {
+      if (total === 0) {
+        alert("Seu carrinho está vazio!");
+      } else {
+        alert("Compra finalizada! Total: R$ " + total.toFixed(2));
+        total = 0;
+        document.getElementById('total').textContent = '0.00';
+      }
+    }
+
+    function toggleExtraTracks(element) {
+      const extra = element.parentElement.querySelector('.extra-tracks');
+      extra.classList.toggle('show');
+    }
+
+    function changeLanguage() {
+  const lang = document.getElementById("language-selector").value;
+  const translations = {
+    pt: {
+      navHome: "Início",
+      navCatalog: "Catálogo",
+      navCart: "Carrinho",
+      navContact: "Contato",
+      cartTitle: "Carrinho",
+      checkout: "Afrekenen",
+      addToCart: "Adicionar ao carrinho",
+      footer: "&copy; 2025 Loja de Músicas | Desenvolvido por você"
+    },
+    en: {
+      navHome: "Home",
+      navCatalog: "Catalog",
+      navCart: "Cart",
+      navContact: "Contact",
+      cartTitle: "Cart",
+      checkout: "Checkout",
+      addToCart: "Add to cart",
+      footer: "&copy; 2025 Music Store | Developed by you"
+    },
+    es: {
+      navHome: "Inicio",
+      navCatalog: "Catálogo",
+      navCart: "Carrito",
+      navContact: "Contacto",
+      cartTitle: "Carrito",
+      checkout: "Finalizar compra",
+      addToCart: "Agregar al carrito",
+      footer: "&copy; 2025 Tienda de Música | Desarrollado por ti"
+    },
+    de: {
+      navHome: "Startseite",
+      navCatalog: "Katalog",
+      navCart: "Warenkorb",
+      navContact: "Kontakt",
+      cartTitle: "Warenkorb",
+      checkout: "Bezahlen",
+      addToCart: "In den Warenkorb",
+      footer: "&copy; 2025 Musikladen | Entwickelt von dir"
+    },
+    nl: {
+      navHome: "Start",
+      navCatalog: "Catalogus",
+      navCart: "Winkelwagen",
+      navContact: "Contact",
+      cartTitle: "Winkelwagen",
+      checkout: "Afrekenen",
+      addToCart: "Toevoegen aan winkelwagen",
+      footer: "&copy; 2025 Muziekwinkel | Ontwikkeld door jou"
+    }
+  };
+
+  const t = translations[lang];
+  document.getElementById("nav-home").textContent = t.navHome;
+  document.getElementById("nav-catalog").textContent = t.navCatalog;
+  document.getElementById("nav-cart").textContent = t.navCart;
+  document.getElementById("nav-contact").textContent = t.navContact;
+  document.querySelector("#carrinho-lateral h3").textContent = t.cartTitle;
+  document.getElementById("btn-checkout").textContent = t.checkout;
+  for (let i = 1; i <= 7; i++) {
+    const btn = document.getElementById(`btn-add-cart-${i}`);
+    if (btn) btn.textContent = t.addToCart;
+  }
+  document.getElementById("footer-text").innerHTML = t.footer;
+}
+
+    const trackList = document.querySelector('.track-list');
+    for (let i = 1; i <= 7; i++) {
+      const div = document.createElement('div');
+      div.className = 'track';
+      div.innerHTML = `
+        <div class="track-header" onclick="toggleExtraTracks(this)">
+          <div class="track-info">
+            <h3>Beat Trap #0${i}</h3>
+            <audio controls controlsList="nodownload">
+              <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="color:#00ff9f; font-weight:bold;">€ 399.00</span>
+            <button onclick="event.stopPropagation(); adicionarCarrinho('Beat Trap #0${i}', 399.00)" id="btn-add-cart-${i}">Adicionar ao carrinho</button>
+          </div>
+        </div>
+        <div class="extra-tracks">
+          <p style="color: #ccc; font-size: 14px; line-height: 1.5;">Descrição: Essa faixa é uma batida energética de trap, perfeita para projetos urbanos, vídeos de ação e produções modernas.</p>
+        </div>
+      `;
+      trackList.appendChild(div);
+    }
+  document.getElementById("currency-selector").addEventListener("change", function () {
+  const currency = this.value;
+  const rateMap = {
+    eur: { symbol: "€", rate: 1 },
+    usd: { symbol: "$", rate: 1.1 },
+    gbp: { symbol: "£", rate: 0.85 },
+    cad: { symbol: "C$", rate: 1.45 },
+    aud: { symbol: "A$", rate: 1.6 },
+    sek: { symbol: "kr", rate: 11.5 },
+    inr: { symbol: "₹", rate: 91 },
+    cny: { symbol: "¥", rate: 7.8 }
+  };
+
+  const { symbol, rate } = rateMap[currency] || rateMap["eur"];
+
+  document.querySelectorAll(".track .track-header span").forEach((priceSpan) => {
+    const base = 399.0;
+    const converted = (base * rate).toFixed(2);
+    priceSpan.textContent = `${symbol} ${converted}`;
+  });
+
+  document.querySelectorAll("#itens-carrinho li span").forEach((itemSpan) => {
+    const parts = itemSpan.textContent.split(" - ");
+    if (parts.length === 2) {
+      const title = parts[0];
+      const newPrice = (399.0 * rate).toFixed(2);
+      itemSpan.textContent = `${title} - ${symbol} ${newPrice}`;
+    }
+  });
+
+  const totalEl = document.getElementById("total");
+  const currentTotal = parseFloat(totalEl.textContent);
+  const newTotal = (399.0 * rate * document.querySelectorAll("#itens-carrinho li").length).toFixed(2);
+  totalEl.textContent = newTotal;
+  totalEl.previousSibling.textContent = `Total: ${symbol} `;
+});
+
+</script>
+</body>
+</html>
